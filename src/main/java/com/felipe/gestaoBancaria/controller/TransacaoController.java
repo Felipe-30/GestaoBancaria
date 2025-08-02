@@ -7,6 +7,7 @@ import com.felipe.gestaoBancaria.service.ContaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,10 +24,10 @@ public class TransacaoController
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ContaDTO realizarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO)
+    public ResponseEntity<ContaDTO> realizarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO)
     {
         Conta conta = contaService.realizarTransacao(transacaoDTO.getNumeroConta(), transacaoDTO.getFormaPagamento(), transacaoDTO.getValor());
 
-        return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ContaDTO(conta.getNumeroConta(), conta.getSaldo()));
     }
 }

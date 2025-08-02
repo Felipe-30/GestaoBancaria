@@ -23,11 +23,11 @@ public class ContaController
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ContaDTO criarConta(@Valid @RequestBody ContaDTO contaDTO)
+    public ResponseEntity<ContaDTO> criarConta(@Valid @RequestBody ContaDTO contaDTO)
     {
         Conta conta = contaService.criarConta(contaDTO.getNumeroConta(), contaDTO.getSaldo());
 
-        return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ContaDTO(conta.getNumeroConta(), conta.getSaldo()));
     }
 
     @GetMapping
