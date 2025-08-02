@@ -1,9 +1,11 @@
 package com.felipe.gestaoBancaria.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+@JsonPropertyOrder({ "numero_conta", "saldo" })
 public class ContaDTO
 {
     @NotNull
