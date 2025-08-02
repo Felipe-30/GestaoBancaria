@@ -33,18 +33,8 @@ public class ContaController
     @GetMapping
     public ResponseEntity<ContaDTO> consultarConta(@RequestParam("numero_conta") Integer numeroConta)
     {
-        try
-        {
-            Conta conta = contaService.consultarConta(numeroConta);
+        Conta conta = contaService.consultarConta(numeroConta);
 
-            ContaDTO contaDTO = new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
-
-            return ResponseEntity.ok(contaDTO);
-        }
-
-        catch (IllegalArgumentException e)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.ok(new ContaDTO(conta.getNumeroConta(), conta.getSaldo()));
     }
 }
