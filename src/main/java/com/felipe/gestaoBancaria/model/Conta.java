@@ -3,30 +3,33 @@ package com.felipe.gestaoBancaria.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 @Entity
 public class Conta
 {
     @Id
-    private int    numeroConta;
-    private double saldo;
+    private int        numeroConta;
+    private BigDecimal saldo;
 
     protected Conta() {}
 
-    public Conta(int numeroConta, double saldoInicial)
+    public Conta(int numeroConta, BigDecimal saldoInicial)
     {
         this.numeroConta = numeroConta;
         this.saldo       = saldoInicial;
     }
 
-    public void debitar(double valor)
+    public void debitar(BigDecimal valor)
     {
-        this.saldo -= valor;
+        this.saldo = this.saldo.subtract(valor).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void creditar(double valor)
+    public void creditar(BigDecimal valor)
     {
-        this.saldo += valor;
+        this.saldo =  this.saldo.add(valor.setScale(2, RoundingMode.HALF_UP));
     }
 
     // Getters e setters
@@ -40,12 +43,12 @@ public class Conta
         this.numeroConta = numeroConta;
     }
 
-    public double getSaldo()
+    public BigDecimal getSaldo()
     {
         return saldo;
     }
 
-    public void setSaldo(double saldo)
+    public void setSaldo(BigDecimal saldo)
     {
         this.saldo = saldo;
     }

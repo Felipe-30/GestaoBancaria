@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+
 
 public class TransacaoDTO
 {
@@ -18,12 +20,12 @@ public class TransacaoDTO
 
     @NotNull
     @Positive
-    private Double valor;
+    private BigDecimal valor;
 
 
     public TransacaoDTO() {}
 
-    public TransacaoDTO(Integer numeroConta, String formaPagamento, Double valor)
+    public TransacaoDTO(Integer numeroConta, String formaPagamento, BigDecimal valor)
     {
         this.formaPagamento = formaPagamento;
         this.numeroConta    = numeroConta;
@@ -52,12 +54,12 @@ public class TransacaoDTO
         this.numeroConta = numeroConta;
     }
 
-    public Double getValor()
+    public BigDecimal getValor()
     {
         return valor;
     }
 
-    public void setValor(Double valor)
+    public void setValor(BigDecimal valor)
     {
         this.valor = valor;
     }

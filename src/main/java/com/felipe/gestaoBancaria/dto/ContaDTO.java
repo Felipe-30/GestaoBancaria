@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.math.BigDecimal;
+
 @JsonPropertyOrder({ "numero_conta", "saldo" })
 public class ContaDTO
 {
@@ -14,12 +16,12 @@ public class ContaDTO
 
     @NotNull
     @PositiveOrZero
-    private Double saldo;
+    private BigDecimal saldo;
 
 
     public ContaDTO() {}
 
-    public ContaDTO(Integer numeroConta, Double saldo)
+    public ContaDTO(Integer numeroConta, BigDecimal saldo)
     {
         this.numeroConta = numeroConta;
         this.saldo       = saldo;
@@ -36,12 +38,12 @@ public class ContaDTO
         this.numeroConta = numeroConta;
     }
 
-    public Double getSaldo()
+    public BigDecimal getSaldo()
     {
         return saldo;
     }
 
-    public void setSaldo(Double saldo)
+    public void setSaldo(BigDecimal saldo)
     {
         this.saldo = saldo;
     }
