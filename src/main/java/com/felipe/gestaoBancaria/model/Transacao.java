@@ -1,16 +1,15 @@
 package com.felipe.gestaoBancaria.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 public class Transacao
 {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -19,8 +18,15 @@ public class Transacao
 
     private String     formaPagamento;
     private BigDecimal valor;
+    private BigDecimal taxa;
 
-    public Transacao() {}
+    @Column(nullable = false)
+    private LocalDateTime dataTransacao;
+
+    public Transacao()
+    {
+        this.dataTransacao = LocalDateTime.now();
+    }
 
 
     // Getters e setters
@@ -52,5 +58,35 @@ public class Transacao
     public void setValor(BigDecimal valor)
     {
         this.valor = valor;
+    }
+
+    public Conta getConta()
+    {
+        return conta;
+    }
+
+    public void setConta(Conta conta)
+    {
+        this.conta = conta;
+    }
+
+    public BigDecimal getTaxa()
+    {
+        return taxa;
+    }
+
+    public void setTaxa(BigDecimal taxa)
+    {
+        this.taxa = taxa;
+    }
+
+    public LocalDateTime getDataTransacao()
+    {
+        return dataTransacao;
+    }
+
+    public void setDataTransacao(LocalDateTime dataHora)
+    {
+        this.dataTransacao = dataHora;
     }
 }
