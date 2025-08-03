@@ -1,4 +1,4 @@
-package com.felipe.gestaoBancaria.integrationTest;
+package com.felipe.gestaoBancaria.functionalTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class TransacaoControllerIntegrationTest
+public class TransacaoControllerFunctionalTest
 {
     @Autowired
     private MockMvc mockMvc;

@@ -1,4 +1,4 @@
-package com.felipe.gestaoBancaria.unitTest;
+package com.felipe.gestaoBancaria.unitTests;
 
 import com.felipe.gestaoBancaria.exception.*;
 import com.felipe.gestaoBancaria.model.Conta;

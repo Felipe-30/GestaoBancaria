@@ -1,4 +1,4 @@
-package com.felipe.gestaoBancaria.integrationTest;
+package com.felipe.gestaoBancaria.functionalTests;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class ContaControllerIntegrationTest
+public class ContaControllerFunctionalTest
 {
     @Autowired
     private MockMvc mockMvc;

@@ -1,4 +1,4 @@
-package com.felipe.gestaoBancaria.integrationTest;
+package com.felipe.gestaoBancaria.integrationTests;
 
 import com.felipe.gestaoBancaria.model.Transacao;
 import com.felipe.gestaoBancaria.repository.TransacaoRepository;
