@@ -59,13 +59,7 @@ public class ContaService
 
     public Conta consultarConta(int numeroConta)
     {
-        Conta conta = contaRepository.findByNumeroConta(numeroConta);
-
-        if (conta == null)
-        {
-            throw new ContaNaoEncontradaException("A conta de número: " + numeroConta + " não foi encontrada na base de dados.");
-        }
-
-        return conta;
+        return contaRepository.findById(numeroConta).orElseThrow(() ->
+                new ContaNaoEncontradaException("A conta de número: " + numeroConta + " não foi encontrada na base de dados."));
     }
 }
