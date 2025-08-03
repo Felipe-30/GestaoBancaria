@@ -112,7 +112,7 @@ public class ContaService
         return conta;
     }
 
-    private BigDecimal calcularTaxa(String formaPagamento, BigDecimal valor)
+    public BigDecimal calcularTaxa(String formaPagamento, BigDecimal valor)
     {
         return arredondar(valor.multiply(TAXA_POR_FORMA_PAGAMENTO.get(formaPagamento)));
     }

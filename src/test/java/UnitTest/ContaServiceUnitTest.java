@@ -157,7 +157,7 @@ class ContaServiceTest
         }
 
         @Test
-        @DisplayName("Deve lançar exceção se valor tiver mais de duas casas")
+        @DisplayName("Deve lançar exceção se valor tiver mais de duas casas decimais")
         void valorMaisDeDuasCasas()
         {
             assertThrows(IllegalArgumentException.class, () -> contaService.realizarTransacao(123, "P", new BigDecimal("10.123")));
@@ -175,6 +175,221 @@ class ContaServiceTest
         void formaPagamentoNula()
         {
             assertThrows(FormaPagamentoInvalidaException.class, () -> contaService.realizarTransacao(123, null, new BigDecimal("10.00")));
+        }
+    }
+
+
+    @Nested
+    class ContaServiceTaxaTest
+    {
+        private ContaService contaService;
+
+        @BeforeEach
+        void setup()
+        {
+            contaService = new ContaService(null);
+        }
+
+        @Test
+        @DisplayName("Deve calcular taxa zero para Pix")
+        void deveCalcularTaxaZeroPix()
+        {
+            BigDecimal valor = new BigDecimal("100.00");
+            BigDecimal taxa  = contaService.calcularTaxa("P", valor);
+
+            assertEquals(new BigDecimal("0.00"), taxa);
+        }
+
+        @Test
+        @DisplayName("Deve calcular taxa de 3% para débito")
+        void deveCalcularTaxaDebito()
+        {
+            BigDecimal valor = new BigDecimal("100.00");
+            BigDecimal taxa  = contaService.calcularTaxa("D", valor);
+
+            assertEquals(new BigDecimal("3.00"), taxa);
+        }
+
+        @Test
+        @DisplayName("Deve calcular taxa de 5% para crédito")
+        void deveCalcularTaxaCredito()
+        {
+            BigDecimal valor = new BigDecimal("100.00");
+            BigDecimal taxa  = contaService.calcularTaxa("C", valor);
+
+            assertEquals(new BigDecimal("5.00"), taxa);
+        }
+
+        @Test
+        @DisplayName("Deve arredondar valor total para duas casas decimais")
+        void deveArredondarValorTotal()
+        {
+            BigDecimal valor = new BigDecimal("10.333");
+            BigDecimal taxa  = contaService.calcularTaxa("D", valor);
+            BigDecimal total = valor.add(taxa).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            assertEquals(new BigDecimal("10.33"), valor.setScale(2, BigDecimal.ROUND_HALF_UP));
+            assertEquals(new BigDecimal("0.31") , taxa);
+            assertEquals(new BigDecimal("10.64"), total);
+        }
+
+        @Test
+        @DisplayName("Deve calcular taxa correta para valores variados")
+        void deveCalcularTaxaParaValoresVariados()
+        {
+            BigDecimal valor1 = new BigDecimal("123.45");
+            BigDecimal valor2 = new BigDecimal("67.89");
+
+            BigDecimal taxaDebito  = contaService.calcularTaxa("D", valor1);
+            BigDecimal taxaCredito = contaService.calcularTaxa("C", valor2);
+
+            assertEquals(new BigDecimal("3.70"), taxaDebito);
+            assertEquals(new BigDecimal("3.39"), taxaCredito);
+        }
+    }
+
+    @Nested
+    class ContaServiceConsultaTest
+    {
+        @Test
+        @DisplayName("Deve consultar conta existente com sucesso")
+        void consultarContaComSucesso()
+        {
+            Conta conta = new Conta(123, new BigDecimal("100.00"));
+
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(conta);
+
+            Conta resultado = contaService.consultarConta(123);
+
+            assertEquals(123, resultado.getNumeroConta());
+            assertEquals(new BigDecimal("100.00"), resultado.getSaldo());
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção ao consultar conta inexistente")
+        void consultarContaInexistente()
+        {
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(null);
+
+            assertThrows(ContaNaoEncontradaException.class, () -> contaService.consultarConta(123));
+        }
+    }
+
+    @Nested
+    class ContaServiceLimitesValidosTest
+    {
+        @Test
+        @DisplayName("Deve criar conta com saldo zero")
+        void criarContaComSaldoZero()
+        {
+            when(contaRepository.existeConta(123)).thenReturn(false);
+            when(contaRepository.salvar(any(Conta.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            Conta conta = contaService.criarConta(123, BigDecimal.ZERO);
+
+            assertEquals(123, conta.getNumeroConta());
+            assertEquals(BigDecimal.ZERO.setScale(2), conta.getSaldo());
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção ao tentar criar conta com saldo negativo mínimo (-0.01)")
+        void criarContaComSaldoNegativoMinimo()
+        {
+            assertThrows(SaldoNegativoException.class, () -> contaService.criarConta(123, new BigDecimal("-0.01")));
+        }
+
+
+        @Test
+        @DisplayName("Deve aceitar transação com valor mínimo positivo")
+        void transacaoComValorMinimoPositivo()
+        {
+            Conta conta = new Conta(123, new BigDecimal("1.00"));
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(conta);
+            when(contaRepository.salvar(any(Conta.class))).thenAnswer(i -> i.getArgument(0));
+
+            Conta atualizada = contaService.realizarTransacao(123, "P", new BigDecimal("0.01"));
+
+            assertEquals(new BigDecimal("0.99"), atualizada.getSaldo());
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção para transação com valor menor que mínimo permitido (0.01)")
+        void transacaoComValorAbaixoDoMinimo()
+        {
+            Conta conta = new Conta(123, new BigDecimal("1.00"));
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(conta);
+
+            assertThrows(ValorTransacaoInvalidoException.class, () -> contaService.realizarTransacao(123, "P", new BigDecimal("0.00")));
+        }
+
+
+        @Test
+        @DisplayName("Deve permitir transação que consome exatamente todo o saldo com taxa")
+        void transacaoComSaldoExatoComTaxa()
+        {
+            Conta conta = new Conta(123, new BigDecimal("10.30"));
+
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(conta);
+            when(contaRepository.salvar(any(Conta.class))).thenAnswer(i -> i.getArgument(0));
+
+            Conta atualizada = contaService.realizarTransacao(123, "D", new BigDecimal("10.00"));
+
+            assertEquals(BigDecimal.ZERO.setScale(2), atualizada.getSaldo());
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção se transação ultrapassar saldo por um centavo")
+        void transacaoUltrapassaSaldoPorCentavo()
+        {
+            Conta conta = new Conta(123, new BigDecimal("10.29"));
+            when(contaRepository.buscarContaPorNumero(123)).thenReturn(conta);
+
+            assertThrows(SaldoInsuficienteException.class, () -> contaService.realizarTransacao(123, "D", new BigDecimal("10.00")));
+        }
+
+    }
+
+    @Nested
+    class ArredondamentoTest
+    {
+        @Test
+        @DisplayName("Deve arredondar corretamente valores com meio centavo para cima")
+        void arredondarMeioCentavoParaCima()
+        {
+            BigDecimal valor = new BigDecimal("0.005");
+            BigDecimal arredondado = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            assertEquals(new BigDecimal("0.01"), arredondado);
+        }
+
+        @Test
+        @DisplayName("Deve arredondar corretamente valores com meio centavo para baixo")
+        void arredondarMeioCentavoParaBaixo()
+        {
+            BigDecimal valor = new BigDecimal("2.004");
+            BigDecimal arredondado = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            assertEquals(new BigDecimal("2.00"), arredondado);
+        }
+
+        @Test
+        @DisplayName("Deve manter duas casas decimais no resultado final")
+        void manterDuasCasasDecimais()
+        {
+            BigDecimal valor = new BigDecimal("10.336");
+            BigDecimal arredondado = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            assertEquals(new BigDecimal("10.34"), arredondado);
+        }
+
+        @Test
+        @DisplayName("Deve manter valor com duas casas decimais sem alteração")
+        void manterValorComDuasCasas()
+        {
+            BigDecimal valor = new BigDecimal("25.50");
+            BigDecimal arredondado = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            assertEquals(valor, arredondado);
         }
     }
 }
