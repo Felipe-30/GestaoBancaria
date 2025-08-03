@@ -31,11 +31,20 @@ public class ContaService
 
     private void validarNovaConta(int numeroConta, BigDecimal saldoInicial)
     {
+        validarNumeroConta(numeroConta);
         validarSaldoInicial(saldoInicial);
 
         if (contaRepository.existsByNumeroConta(numeroConta))
         {
             throw new ContaExistenteException("A conta de número: " + numeroConta + " já existe na base de dados.");
+        }
+    }
+
+    private static void validarNumeroConta(int numeroConta)
+    {
+        if (numeroConta <= 0)
+        {
+            throw new IllegalArgumentException("Número da conta deve ser maior que zero.");
         }
     }
 
