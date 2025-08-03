@@ -6,6 +6,7 @@ import com.felipe.gestaoBancaria.service.ContaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,11 +30,21 @@ public class ContaController
         return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
     }
 
-    @GetMapping("/{numero}")
-    public ContaDTO consultarConta(@PathVariable int numero)
+    @GetMapping
+    public ResponseEntity<ContaDTO> consultarConta(@RequestParam("numero_conta") Integer numeroConta)
     {
-        Conta conta = contaService.consultarConta(numero);
+        try
+        {
+            Conta conta = contaService.consultarConta(numeroConta);
 
-        return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
+            ContaDTO contaDTO = new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
+
+            return ResponseEntity.ok(contaDTO);
+        }
+
+        catch (IllegalArgumentException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 }
