@@ -1,29 +1,13 @@
 package com.felipe.gestaoBancaria.repository;
 
 import com.felipe.gestaoBancaria.model.Conta;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Repository
-public class ContaRepository
+public interface ContaRepository extends JpaRepository<Conta, Integer>
 {
-    private Map<Integer, Conta> contas = new ConcurrentHashMap<>();
+    Conta findByNumeroConta(int numeroConta);
 
-    public Conta salvar(Conta conta)
-    {
-        contas.put(conta.getNumeroConta(), conta);
-        return conta;
-    }
-
-    public Conta buscarContaPorNumero(int numeroConta)
-    {
-        return contas.get(numeroConta);
-    }
-
-    public boolean existeConta(int numeroConta)
-    {
-        return contas.containsKey(numeroConta);
-    }
+    boolean existsByNumeroConta(int numeroConta);
 }
