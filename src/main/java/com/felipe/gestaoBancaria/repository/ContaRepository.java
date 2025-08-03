@@ -1,9 +1,12 @@
 package com.felipe.gestaoBancaria.repository;
 
 import com.felipe.gestaoBancaria.model.Conta;
+import org.springframework.stereotype.Repository;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Repository
 public class ContaRepository
 {
     private Map<Integer, Conta> contas = new ConcurrentHashMap<>();

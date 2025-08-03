@@ -2,7 +2,9 @@ package com.felipe.gestaoBancaria.service;
 
 import com.felipe.gestaoBancaria.model.Conta;
 import com.felipe.gestaoBancaria.repository.ContaRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ContaService
 {
     private final ContaRepository contaRepository;
