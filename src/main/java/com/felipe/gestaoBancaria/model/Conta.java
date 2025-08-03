@@ -1,11 +1,11 @@
 package com.felipe.gestaoBancaria.model;
 
+import com.felipe.gestaoBancaria.utils.BigDecimalUtils;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 
@@ -29,12 +29,12 @@ public class Conta
 
     public void debitar(BigDecimal valor)
     {
-        this.saldo = this.saldo.subtract(valor).setScale(2, RoundingMode.HALF_UP);
+        this.saldo = BigDecimalUtils.arredondar(this.saldo.subtract(valor));
     }
 
     public void creditar(BigDecimal valor)
     {
-        this.saldo =  this.saldo.add(valor.setScale(2, RoundingMode.HALF_UP));
+        this.saldo = BigDecimalUtils.arredondar(this.saldo.add(valor));
     }
 
     // Getters e setters
