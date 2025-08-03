@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class ContaServiceTest
+class ContaServiceUnitTest
 {
     @Mock
     private ContaRepository contaRepository;
