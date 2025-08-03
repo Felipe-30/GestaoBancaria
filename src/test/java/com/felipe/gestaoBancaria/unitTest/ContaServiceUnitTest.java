@@ -1,4 +1,4 @@
-package UnitTest;
+package com.felipe.gestaoBancaria.unitTest;
 
 import com.felipe.gestaoBancaria.exception.ContaExistenteException;
 import com.felipe.gestaoBancaria.exception.ContaNaoEncontradaException;

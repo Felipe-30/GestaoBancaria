@@ -1,4 +1,4 @@
-package UnitTest;
+package com.felipe.gestaoBancaria.unitTest;
 
 import com.felipe.gestaoBancaria.utils.BigDecimalUtils;
 import org.junit.jupiter.api.DisplayName;
