@@ -12,6 +12,7 @@ public class TransacaoDTO
     private String formaPagamento;
 
     @NotNull
+    @Positive
     @JsonProperty("numero_conta")
     private Integer numeroConta;
 
@@ -25,8 +26,8 @@ public class TransacaoDTO
     public TransacaoDTO(Integer numeroConta, String formaPagamento, Double valor)
     {
         this.formaPagamento = formaPagamento;
-        this.numeroConta = numeroConta;
-        this.valor = valor;
+        this.numeroConta    = numeroConta;
+        this.valor          = valor;
     }
 
 

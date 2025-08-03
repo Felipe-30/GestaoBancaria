@@ -11,10 +11,7 @@ public class Conta
     private int    numeroConta;
     private double saldo;
 
-    protected Conta()
-    {
-
-    }
+    protected Conta() {}
 
     public Conta(int numeroConta, double saldoInicial)
     {

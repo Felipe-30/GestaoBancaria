@@ -2,6 +2,7 @@ package com.felipe.gestaoBancaria.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class ContaDTO
 {
@@ -10,6 +11,7 @@ public class ContaDTO
     private Integer numeroConta;
 
     @NotNull
+    @PositiveOrZero
     private Double saldo;
 
 
