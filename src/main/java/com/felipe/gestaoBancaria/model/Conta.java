@@ -1,9 +1,20 @@
 package com.felipe.gestaoBancaria.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+
+@Entity
 public class Conta
 {
+    @Id
     private int    numeroConta;
     private double saldo;
+
+    protected Conta()
+    {
+
+    }
 
     public Conta(int numeroConta, double saldoInicial)
     {
