@@ -1,30 +1,42 @@
 package com.felipe.gestaoBancaria.service;
 
+import com.felipe.gestaoBancaria.dto.TransacaoResponseDTO;
 import com.felipe.gestaoBancaria.exception.FormaPagamentoInvalidaException;
 import com.felipe.gestaoBancaria.exception.SaldoInsuficienteException;
 import com.felipe.gestaoBancaria.exception.ValorTransacaoInvalidoException;
 import com.felipe.gestaoBancaria.model.Conta;
+import com.felipe.gestaoBancaria.model.Transacao;
 import com.felipe.gestaoBancaria.repository.ContaRepository;
+import com.felipe.gestaoBancaria.repository.TransacaoRepository;
 import com.felipe.gestaoBancaria.utils.BigDecimalUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TransacaoService
 {
-    private static final Map<String, BigDecimal> TAXA_POR_FORMA_PAGAMENTO = Map.of("P", BigDecimal.ZERO, "D", new BigDecimal("0.03"), "C", new BigDecimal("0.05"));
+    private static final Map<String, BigDecimal> TAXA_POR_FORMA_PAGAMENTO = Map.of(
+            "P", BigDecimal.ZERO, "D", new BigDecimal("0.03"), "C", new BigDecimal("0.05"));
 
-    private final ContaService contaService;
+    private final ContaService    contaService;
     private final ContaRepository contaRepository;
 
-    public TransacaoService(ContaService contaService, ContaRepository contaRepository)
+    private final TransacaoRepository transacaoRepository;
+
+    public TransacaoService(ContaService contaService, ContaRepository contaRepository, TransacaoRepository transacaoRepository)
     {
-        this.contaService    = contaService;
-        this.contaRepository = contaRepository;
+        this.contaService        = contaService;
+        this.contaRepository     = contaRepository;
+        this.transacaoRepository = transacaoRepository;
     }
 
+    @Transactional
     public Conta realizarTransacao(int numeroConta, String formaPagamento, BigDecimal valor)
     {
         validarFormatoTransacao(formaPagamento, valor);
@@ -37,6 +49,9 @@ public class TransacaoService
         validarTransacao(conta, total);
 
         conta.debitar(total);
+
+        Transacao transacao = new Transacao(conta, formaPagamento, valor, taxa, LocalDateTime.now());
+        transacaoRepository.save(transacao);
 
         return contaRepository.save(conta);
     }
@@ -77,6 +92,43 @@ public class TransacaoService
         {
             throw new SaldoInsuficienteException("Saldo insuficiente para realizar a transação.");
         }
+    }
+
+    public List<TransacaoResponseDTO> buscarTransacoesPorConta(int numeroConta)
+    {
+        return toDTO(transacaoRepository.findByContaNumeroConta(numeroConta));
+    }
+
+    public List<TransacaoResponseDTO> buscarTransacoesPorFormaPagamento(int numeroConta, String formaPagamento)
+    {
+        return toDTO(transacaoRepository.findByContaNumeroContaAndFormaPagamento(numeroConta, formaPagamento));
+    }
+
+    public List<TransacaoResponseDTO> buscarTransacoesPorValorMaiorQue(int numeroConta, BigDecimal valorMinimo)
+    {
+        return toDTO(transacaoRepository.findByContaNumeroContaAndValorGreaterThan(numeroConta, valorMinimo));
+    }
+
+    public List<TransacaoResponseDTO> buscarTransacoesOrdenadasPorData(int numeroConta)
+    {
+        return toDTO(transacaoRepository.findByContaNumeroContaOrderByDataTransacaoDesc(numeroConta));
+    }
+
+    public List<TransacaoResponseDTO> buscarTransacoesPorIntervaloDeDatas(int numeroConta, LocalDateTime inicio, LocalDateTime fim)
+    {
+        return toDTO(transacaoRepository.findByContaNumeroContaAndDataTransacaoBetween(numeroConta, inicio, fim));
+    }
+
+    private List<TransacaoResponseDTO> toDTO(List<Transacao> transacoes)
+    {
+        return transacoes.stream()
+                .map(t -> new TransacaoResponseDTO(
+                        t.getFormaPagamento(),
+                        t.getValor(),
+                        t.getTaxa(),
+                        t.getDataTransacao()
+                ))
+                .collect(Collectors.toList());
     }
 }
 
