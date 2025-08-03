@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 @JsonPropertyOrder({ "numero_conta", "saldo" })
 public class ContaDTO
 {
-    @NotNull
+    @NotNull(message = "O número da conta é obrigatório.")
     @JsonProperty("numero_conta")
     private Integer numeroConta;
 
-    @NotNull
+    @NotNull(message = "O saldo inicial é obrigatório.")
     @PositiveOrZero
     private BigDecimal saldo;
 

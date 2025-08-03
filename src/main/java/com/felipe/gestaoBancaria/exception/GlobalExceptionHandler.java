@@ -2,10 +2,12 @@ package com.felipe.gestaoBancaria.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -58,6 +60,25 @@ public class GlobalExceptionHandler
     {
         return construirRespostaErro(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor.", ex);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex)
+    {
+        List<String> mensagens = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .toList();
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("error", "Erro de validação");
+        body.put("message", String.join("; ", mensagens));
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
 
     private ResponseEntity<Map<String, Object>> construirRespostaErro(HttpStatus status, String tituloErro, Exception ex)
     {
