@@ -123,6 +123,7 @@ public class TransacaoService
     {
         return transacoes.stream()
                 .map(t -> new TransacaoResponseDTO(
+                        t.getConta().getNumeroConta(),
                         t.getFormaPagamento(),
                         t.getValor(),
                         t.getTaxa(),
