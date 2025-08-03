@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 
 public class TransacaoResponseDTO
 {
+    @JsonProperty("numero_conta")
+    private Integer numeroConta;
+
     @JsonProperty("forma_pagamento")
     private String formaPagamento;
 
@@ -19,12 +22,13 @@ public class TransacaoResponseDTO
 
     public TransacaoResponseDTO() {}
 
-    public TransacaoResponseDTO(String formaPagamento, BigDecimal valor, BigDecimal taxa, LocalDateTime dataTransacao)
+    public TransacaoResponseDTO(Integer numeroConta, String formaPagamento, BigDecimal valor, BigDecimal taxa, LocalDateTime dataTransacao)
     {
         this.taxa           = taxa;
         this.valor          = valor;
         this.dataTransacao  = dataTransacao;
         this.formaPagamento = formaPagamento;
+        this.numeroConta    = numeroConta;
     }
 
     // Getters e setters
@@ -66,5 +70,15 @@ public class TransacaoResponseDTO
     public void setDataTransacao(LocalDateTime dataTransacao)
     {
         this.dataTransacao = dataTransacao;
+    }
+
+    public Integer getNumeroConta()
+    {
+        return numeroConta;
+    }
+
+    public void setNumeroConta(Integer numeroConta)
+    {
+        this.numeroConta = numeroConta;
     }
 }

@@ -13,7 +13,7 @@ public class Transacao
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "numero_conta")
+    @JoinColumn(name = "conta_numero_conta", nullable = false)
     private Conta conta;
 
     @Column(name = "forma_pagamento", length = 1, nullable = false)
