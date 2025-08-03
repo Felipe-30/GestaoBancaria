@@ -1,12 +1,14 @@
 package com.felipe.gestaoBancaria.controller;
 
+import com.felipe.gestaoBancaria.dto.ContaDTO;
 import com.felipe.gestaoBancaria.model.Conta;
 import com.felipe.gestaoBancaria.service.ContaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/contas")
+@RequestMapping("/conta")
 public class ContaController
 {
     private final ContaService contaService;
@@ -18,20 +20,19 @@ public class ContaController
     }
 
     @PostMapping
-    public Conta criarConta(@RequestParam int numero, @RequestParam double saldoInicial)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ContaDTO criarConta(@RequestBody ContaDTO contaDTO)
     {
-        return contaService.criarConta(numero, saldoInicial);
+        Conta conta = contaService.criarConta(contaDTO.getNumeroConta(), contaDTO.getSaldo());
+
+        return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
     }
 
     @GetMapping("/{numero}")
-    public Conta consultarConta(@PathVariable int numero)
+    public ContaDTO consultarConta(@PathVariable int numero)
     {
-        return contaService.consultarConta(numero);
-    }
+        Conta conta = contaService.consultarConta(numero);
 
-    @PostMapping("/{numero}/transacoes")
-    public Conta realizarTransacao(@PathVariable int numero, @RequestParam String formaPagamento, @RequestParam double valor)
-    {
-        return contaService.realizarTransacao(numero, formaPagamento, valor);
+        return new ContaDTO(conta.getNumeroConta(), conta.getSaldo());
     }
 }
