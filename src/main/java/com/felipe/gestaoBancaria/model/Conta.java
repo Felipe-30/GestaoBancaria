@@ -15,12 +15,12 @@ public class Conta
     private int numeroConta;
 
     @Column(nullable = false)
-    private BigDecimal saldo;
+    private BigDecimal saldo =  BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "conta")
     private List<Transacao> transacoes;
 
-    protected Conta() {}
+    public Conta() {}
 
     public Conta(int numeroConta, BigDecimal saldoInicial)
     {
