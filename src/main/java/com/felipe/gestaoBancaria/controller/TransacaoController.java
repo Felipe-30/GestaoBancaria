@@ -3,7 +3,7 @@ package com.felipe.gestaoBancaria.controller;
 import com.felipe.gestaoBancaria.dto.ContaDTO;
 import com.felipe.gestaoBancaria.dto.TransacaoDTO;
 import com.felipe.gestaoBancaria.model.Conta;
-import com.felipe.gestaoBancaria.service.ContaService;
+import com.felipe.gestaoBancaria.service.TransacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/transacao")
 public class TransacaoController
 {
-    private final ContaService contaService;
+    private final TransacaoService transacaoService;
 
     @Autowired
-    public TransacaoController(ContaService contaService)
+    public TransacaoController(TransacaoService transacaoService)
     {
-        this.contaService = contaService;
+        this.transacaoService = transacaoService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ContaDTO> realizarTransacao(@Valid @RequestBody TransacaoDTO transacaoDTO)
     {
-        Conta conta = contaService.realizarTransacao(transacaoDTO.getNumeroConta(), transacaoDTO.getFormaPagamento(), transacaoDTO.getValor());
+        Conta conta = transacaoService.realizarTransacao(transacaoDTO.getNumeroConta(), transacaoDTO.getFormaPagamento(), transacaoDTO.getValor());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ContaDTO(conta.getNumeroConta(), conta.getSaldo()));
     }
