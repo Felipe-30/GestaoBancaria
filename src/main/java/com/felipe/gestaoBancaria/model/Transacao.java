@@ -33,6 +33,15 @@ public class Transacao
         this.dataTransacao = LocalDateTime.now();
     }
 
+    public Transacao(Conta conta, String formaPagamento, BigDecimal valor, BigDecimal taxa, LocalDateTime dataTransacao)
+    {
+        this.taxa           = taxa;
+        this.valor          = valor;
+        this.conta          = conta;
+        this.formaPagamento = formaPagamento;
+        this.dataTransacao  = dataTransacao;
+    }
+
 
     // Getters e setters
     public void setId(Long id)
