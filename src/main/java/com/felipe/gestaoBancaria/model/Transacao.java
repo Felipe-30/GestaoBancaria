@@ -13,11 +13,16 @@ public class Transacao
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "numeroConta")
+    @JoinColumn(name = "numero_conta")
     private Conta conta;
 
-    private String     formaPagamento;
+    @Column(name = "forma_pagamento", length = 1, nullable = false)
+    private String formaPagamento;
+
+    @Column(nullable = false)
     private BigDecimal valor;
+
+    @Column(nullable = false)
     private BigDecimal taxa;
 
     @Column(nullable = false)

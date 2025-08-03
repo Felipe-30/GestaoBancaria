@@ -1,9 +1,7 @@
 package com.felipe.gestaoBancaria.model;
 
 import com.felipe.gestaoBancaria.utils.BigDecimalUtils;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,7 +11,10 @@ import java.util.List;
 public class Conta
 {
     @Id
-    private int        numeroConta;
+    @Column(name = "numero_conta")
+    private int numeroConta;
+
+    @Column(nullable = false)
     private BigDecimal saldo;
 
     @OneToMany(mappedBy = "conta")
