@@ -2,9 +2,11 @@ package com.felipe.gestaoBancaria.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 
 @Entity
@@ -13,6 +15,9 @@ public class Conta
     @Id
     private int        numeroConta;
     private BigDecimal saldo;
+
+    @OneToMany(mappedBy = "conta")
+    private List<Transacao> transacoes;
 
     protected Conta() {}
 
