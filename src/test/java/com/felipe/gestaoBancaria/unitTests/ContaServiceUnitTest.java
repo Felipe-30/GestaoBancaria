@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -86,6 +87,22 @@ class ContaServiceUnitTest
         {
             assertThrows(IllegalArgumentException.class, () -> contaService.criarConta(123, new BigDecimal("10.123")));
         }
+
+        @Test
+        @DisplayName("Deve lançar exceção ao criar conta com número zero")
+        void criarContaComNumeroZero()
+        {
+            assertThrows(IllegalArgumentException.class, () ->
+                    contaService.criarConta(0, new BigDecimal("100.00")));
+        }
+
+        @Test
+        @DisplayName("Deve lançar exceção ao criar conta com número negativo")
+        void criarContaComNumeroNegativo()
+        {
+            assertThrows(IllegalArgumentException.class, () ->
+                    contaService.criarConta(-10, new BigDecimal("100.00")));
+        }
     }
 
     @Nested
@@ -97,7 +114,7 @@ class ContaServiceUnitTest
         {
             Conta conta = new Conta(123, new BigDecimal("100.00"));
 
-            when(contaRepository.findByNumeroConta(123)).thenReturn(conta);
+            when(contaRepository.findById(123)).thenReturn(Optional.of(conta));
 
             Conta resultado = contaService.consultarConta(123);
 

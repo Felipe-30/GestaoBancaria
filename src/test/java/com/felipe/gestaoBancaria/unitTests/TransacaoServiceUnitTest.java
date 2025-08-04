@@ -1,8 +1,12 @@
 package com.felipe.gestaoBancaria.unitTests;
 
-import com.felipe.gestaoBancaria.exception.*;
+import com.felipe.gestaoBancaria.exception.ContaNaoEncontradaException;
+import com.felipe.gestaoBancaria.exception.FormaPagamentoInvalidaException;
+import com.felipe.gestaoBancaria.exception.SaldoInsuficienteException;
+import com.felipe.gestaoBancaria.exception.ValorTransacaoInvalidoException;
 import com.felipe.gestaoBancaria.model.Conta;
 import com.felipe.gestaoBancaria.repository.ContaRepository;
+import com.felipe.gestaoBancaria.repository.TransacaoRepository;
 import com.felipe.gestaoBancaria.service.ContaService;
 import com.felipe.gestaoBancaria.service.TransacaoService;
 import com.felipe.gestaoBancaria.utils.BigDecimalUtils;
@@ -16,8 +20,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TransacaoServiceUnitTest
@@ -28,6 +34,9 @@ public class TransacaoServiceUnitTest
     @InjectMocks
     private TransacaoService transacaoService;
 
+    @Mock
+    private TransacaoRepository transacaoRepository;
+
     @BeforeEach
     void setUp()
     {
@@ -37,6 +46,21 @@ public class TransacaoServiceUnitTest
     @Nested
     class TransacaoTests
     {
+        @Test
+        @DisplayName("Deve salvar transação ao realizar transação")
+        void deveSalvarTransacao()
+        {
+            Conta conta = new Conta(123, new BigDecimal("100.00"));
+
+            when(contaService.consultarConta(123)).thenReturn(conta);
+            when(contaRepository.save(any(Conta.class))).thenAnswer(i -> i.getArgument(0));
+            when(transacaoRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+            transacaoService.realizarTransacao(123, "P", new BigDecimal("10.00"));
+
+            verify(transacaoRepository).save(any());
+        }
+
         @Test
         @DisplayName("Deve realizar transação com débito")
         void transacaoDebito()

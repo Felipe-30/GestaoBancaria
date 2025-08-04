@@ -5,6 +5,7 @@ import com.felipe.gestaoBancaria.exception.ContaNaoEncontradaException;
 import com.felipe.gestaoBancaria.exception.SaldoNegativoException;
 import com.felipe.gestaoBancaria.model.Conta;
 import com.felipe.gestaoBancaria.service.ContaService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public class ContaServiceIntegrationTest
 {
     @Autowired

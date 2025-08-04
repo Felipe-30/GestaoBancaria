@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BigDecimalUtilsUnitTest
 {
@@ -52,6 +53,13 @@ public class BigDecimalUtilsUnitTest
             BigDecimal arredondado = BigDecimalUtils.arredondar(valor);
 
             assertEquals(valor, arredondado);
+        }
+
+        @Test
+        @DisplayName("Deve lançar NullPointerException ao passar valor null para arredondar")
+        void arredondarValorNull()
+        {
+            assertThrows(NullPointerException.class, () -> BigDecimalUtils.arredondar(null));
         }
     }
 }
