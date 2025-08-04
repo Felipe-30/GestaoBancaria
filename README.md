@@ -1,92 +1,103 @@
-Gestão Bancária API
-Este projeto é uma API REST desenvolvida em Java com Spring Boot, voltada para a simulação de uma aplicação bancária simples. É possível criar contas, consultar saldo e realizar transações com cálculo de taxa, dependendo da forma de pagamento (Pix, Débito ou Crédito).
+Projeto: Gestão Bancária API
+============================
 
-Tecnologias utilizadas 
+1 Descrição
+------------
+API REST em Java com Spring Boot para simular uma aplicação bancária simples. Permite criar contas, consultar saldo, realizar transações com cálculo de taxas e manter histórico de transações.
 
-A aplicação foi construída com as seguintes tecnologias:
-
+2 Tecnologias Utilizadas
+--------------------------
 - Java 17
-
 - Spring Boot 3.2.5
+- Maven
+- Spring Web
+- Spring Data JPA
+- Banco H2 (para testes)
+- JUnit 5 + AssertJ + Mockito (para testes)
 
-- Maven para gerenciamento de dependências
-
-- API REST utilizando Spring Web
-
-Funcionalidades
-
-- A API permite:
-
+3 Funcionalidades
+------------------
 - Criar conta com saldo inicial (não pode ser negativo)
-
 - Consultar uma conta pelo número
+- Realizar transações com cálculo de taxas:
+  - Pix: 0%
+  - Débito: 3%
+  - Crédito: 5%
+- Armazenar transações e consultar histórico por:
+  - Número da conta
+  - Forma de pagamento
+  - Valor mínimo
+  - Intervalo de datas
+  - Ordenadas por data
 
-- Realizar transações de pagamento com cálculo de taxas
+4 Como Executar o Projeto
+--------------------------
+Pré-requisitos:
+- Java 17
+- Maven
+- Git
 
-- Validar saldo e existência de conta
+Passos:
+1. Clone o repositório:
+   git clone https://github.com/Felipe-30/GestaoBancaria.git
 
-- Evitar transações com valor inválido ou saldo insuficiente
+2. Acesse a pasta do projeto:
+   cd GestaoBancaria
 
-Como executar o projeto localmente
+3. Execute com Maven:
+   mvn spring-boot:run
 
-Pré-requisitos: é necessário ter instalado Java 17, Maven e Git.
+4. Acesse via navegador ou ferramentas como Postman:
+   http://localhost:8080
 
-1 - Clone este repositório:
-git clone https://github.com/Felipe-30/GestaoBancaria.git
+5 Como Rodar os Testes:
+------------------------
+1. Execute o comando: mvn test
 
-2 - Acesse a pasta do projeto:
-cd GestaoBancaria
+2. Todos os testes unitários e de integração serão executados automaticamente.
 
-3 - Execute o projeto com Maven:
-mvn spring-boot:run
+6 Endpoints Disponíveis
+------------------------
 
-4 - A aplicação estará rodando em:
-http://localhost:8080
+6.1. Conta
 
-Exemplos de uso
+- Criar Conta
+  - POST /conta
+  - Body: { "numero_conta": 123, "saldo": 100.00 }
 
-- Criar conta (POST /conta):
+- Consultar Conta
+  - GET /conta?numero_conta=123
 
-  - Envie um JSON como:
-  { "numero_conta": 234, "saldo": 180.37 }
+6.2. Transação
 
+- Realizar Transação
+  - POST /transacao
+  - Body: { "numero_conta": 123, "forma_pagamento": "C", "valor": 10.00 }
 
-- Consultar conta (GET /conta?numero_conta=234):
+- Listar Todas Transações por Conta
+  - GET /transacao/todas?numero_conta=123
 
-    - Retorna os dados da conta especificada.
+- Listar por Forma de Pagamento
+  - GET /transacao/forma-pagamento?numero_conta=123&forma=C
 
+- Listar por Valor Mínimo
+  - GET /transacao/valor-minimo?numero_conta=123&valor=50
 
-- Realizar transação (POST /transacao):
+- Listar Ordenadas por Data (desc)
+  - GET /transacao/ordenadas?numero_conta=123
 
-    - Envie um JSON como:{ "forma_pagamento": "D", "numero_conta": 234, "valor": 10 } 
-    - Onde D é Débito, C é Crédito e P é Pix.
+- Listar por Intervalo de Datas
+  - GET /transacao/intervalo?numero_conta=123&inicio=2025-08-01T00:00:00&fim=2025-08-04T23:59:59
 
-Sobre o desenvolvimento
+7 Organização e Diferenciais
+-----------------------------
 
-Durante o desenvolvimento, foi priorizado:
-
-- Separação clara entre camadas (model, repository, service, controller)
-
-- Código limpo e bem organizado
-
-- Commits descritivos para cada etapa do desenvolvimento
-
-- Preparação do projeto para expansão futura
-
-- Validações robustas de regras de negócio
-
-Diferenciais implementados
-
-- Projeto completo e funcional
-
-- Boas práticas de arquitetura em camadas
-
-- README explicativo
-
-- Organização e clareza no código
-
-- Preparado para testes e integração futura com persistência real
-
-Contato
-
-Dúvidas ou sugestões podem ser enviadas via GitHub ou por e-mail.
+- Projeto completo, funcional e preparado para expansão futura
+- Código limpo, legível e modularizado em camadas (Controller, Service, Repository, DTOs)
+- Utilização dos padrões de projeto Repository, Service Layer e DTO para melhor organização e manutenção
+- Cobertura abrangente de testes unitários e de integração utilizando JUnit 5, AssertJ e Mockito
+- Uso do banco H2 em memória para testes de integração, garantindo isolamento e confiabilidade
+- Persistência de dados com Spring Data JPA, facilitando operações e consultas avançadas
+- Registro detalhado e armazenamento do histórico de transações, com consultas flexíveis por filtros diversos
+- Validações robustas de regras de negócio e tratamento consistente de exceções
+- Commits descritivos e organizados, refletindo boas práticas de versionamento  
