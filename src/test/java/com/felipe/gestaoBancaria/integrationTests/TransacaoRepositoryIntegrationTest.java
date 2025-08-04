@@ -76,7 +76,7 @@ public class TransacaoRepositoryIntegrationTest
     @Test
     void deveRetornarListaVaziaParaContaSemTransacoes()
     {
-        List<Transacao> transacoes = transacaoRepository.findByContaNumeroConta(99999); // conta inexistente
+        List<Transacao> transacoes = transacaoRepository.findByContaNumeroConta(99999);
 
         assertThat(transacoes).isEmpty();
     }
